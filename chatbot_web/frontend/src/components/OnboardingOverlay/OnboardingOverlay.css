@@ -1,0 +1,695 @@
+/* ===================================================================
+   OnboardingOverlay – animated first-run walkthrough
+   =================================================================== */
+
+/* Root container — covers the whole viewport, above everything */
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: all;
+  animation: onboarding-fade-in 0.4s ease-out;
+}
+
+.onboarding-overlay.onboarding-exit {
+  animation: onboarding-fade-out 0.5s ease-in forwards;
+}
+
+@keyframes onboarding-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes onboarding-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Backdrop
+   ──────────────────────────────────────────────────────────────────── */
+
+.onboarding-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Step 1: spotlight the create-window button (fixed position)
+   Button: bottom: 100px; right: 24px; 56×56 */
+.onboarding-backdrop-spotlight {
+  -webkit-mask-image: radial-gradient(
+    circle 48px at calc(100% - 52px) calc(100% - 128px),
+    transparent 100%,
+    black 100%
+  );
+  mask-image: radial-gradient(
+    circle 48px at calc(100% - 52px) calc(100% - 128px),
+    transparent 100%,
+    black 100%
+  );
+}
+
+/* Steps 2-3: dynamic spotlight — mask applied via inline style */
+.onboarding-backdrop-dynamic {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Step 1 (auto-demo): near-transparent so the window is fully visible */
+.onboarding-backdrop-watch {
+  background: rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+/* Auto-demo watching badge */
+.onboarding-watch-badge {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(20, 20, 40, 0.9);
+  border: 1px solid rgba(100, 149, 237, 0.3);
+  border-radius: 100px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 500;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  pointer-events: all;
+}
+
+.onboarding-watch-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(100, 149, 237, 0.3);
+  border-top-color: #6495ed;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.onboarding-watch-skip {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0 0 0 4px;
+}
+
+.onboarding-watch-skip:hover {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Step 0 — Welcome card
+   ──────────────────────────────────────────────────────────────────── */
+
+.onboarding-welcome {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 56px 40px;
+  max-width: 440px;
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px) saturate(1.6);
+  -webkit-backdrop-filter: blur(40px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 28px;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+  animation: welcome-card-in 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes welcome-card-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.onboarding-welcome-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
+  animation: welcome-icon-float 3s ease-in-out infinite;
+}
+
+@keyframes welcome-icon-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.onboarding-welcome-logo {
+  font-size: 36px;
+  color: #fff;
+  line-height: 1;
+}
+
+.onboarding-welcome-title {
+  margin: 8px 0 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.onboarding-welcome-sub {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 340px;
+}
+
+.onboarding-welcome-btn {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
+  transition: all 0.2s ease;
+}
+
+.onboarding-welcome-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(139, 92, 246, 0.6);
+}
+
+.onboarding-welcome-btn:active {
+  transform: scale(0.97);
+}
+
+.onboarding-welcome-skip {
+  margin-top: 4px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.onboarding-welcome-skip:hover {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Step 1 — Spotlight ring + pulse + pointer (Create Window button)
+   ──────────────────────────────────────────────────────────────────── */
+
+.onboarding-spotlight-ring {
+  position: fixed;
+  bottom: 96px;
+  right: 20px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.8);
+  box-shadow:
+    0 0 0 4px rgba(139, 92, 246, 0.25),
+    0 0 24px rgba(139, 92, 246, 0.35);
+  pointer-events: none;
+  animation: spotlight-ring-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes spotlight-ring-in {
+  from { opacity: 0; transform: scale(1.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.onboarding-pulse {
+  position: fixed;
+  bottom: 96px;
+  right: 20px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: onboarding-pulse-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes onboarding-pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5); }
+  70%  { box-shadow: 0 0 0 20px rgba(139, 92, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+.onboarding-pointer {
+  position: fixed;
+  bottom: 70px;
+  right: 80px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+  animation:
+    pointer-appear 0.5s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both,
+    pointer-bounce 1.5s 0.8s ease-in-out infinite;
+}
+
+@keyframes pointer-appear {
+  from { opacity: 0; transform: translate(30px, 20px) scale(0.7); }
+  to   { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+
+@keyframes pointer-bounce {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(6px, 6px); }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Shared tooltip (used for steps 1-3)
+   ──────────────────────────────────────────────────────────────────── */
+
+.onboarding-tooltip {
+  position: fixed;
+  bottom: 170px;
+  right: 16px;
+  width: 300px;
+  padding: 24px;
+  background: rgba(20, 20, 32, 0.92);
+  backdrop-filter: blur(32px) saturate(1.4);
+  -webkit-backdrop-filter: blur(32px) saturate(1.4);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 20px;
+  box-shadow:
+    0 16px 64px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: tooltip-in 0.6s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Dynamic positioning variant (steps 2, 3) */
+.onboarding-tooltip-dynamic {
+  bottom: auto;
+  right: auto;
+  width: 320px;
+  animation: tooltip-dynamic-in 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Step 3: chat-toggle tooltip — position driven by inline style */
+.onboarding-chat-tooltip {
+  position: fixed;
+  bottom: auto;
+  width: 300px;
+  animation: tooltip-dynamic-in 0.5s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes tooltip-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes tooltip-dynamic-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Arrow variants */
+.onboarding-tooltip-arrow {
+  position: absolute;
+  bottom: -8px;
+  right: 32px;
+  width: 16px;
+  height: 16px;
+  background: rgba(20, 20, 32, 0.92);
+  border-right: 1px solid rgba(139, 92, 246, 0.3);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+  transform: rotate(45deg);
+  border-radius: 0 0 4px 0;
+}
+
+/* Arrow pointing down-left (step 2: tooltip above input) */
+.onboarding-tooltip-arrow-bottom-left {
+  bottom: -8px;
+  left: 40px;
+  right: auto;
+}
+
+/* Arrow pointing up (step 3: tooltip below chat toggle) */
+.onboarding-tooltip-arrow-top {
+  top: -8px;
+  bottom: auto;
+  right: auto;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1px solid rgba(139, 92, 246, 0.3);
+  border-top: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.onboarding-tooltip-step {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #a78bfa;
+  margin-bottom: 8px;
+}
+
+.onboarding-tooltip-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.onboarding-tooltip-desc {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.onboarding-tooltip-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.onboarding-tooltip-btn-primary {
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.45);
+  transition: all 0.2s ease;
+}
+
+.onboarding-tooltip-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(139, 92, 246, 0.55);
+}
+
+.onboarding-tooltip-btn-primary:active {
+  transform: scale(0.96);
+}
+
+.onboarding-tooltip-btn-ghost {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.onboarding-tooltip-btn-ghost:hover {
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Shared — Dynamic spotlight ring + pulse (steps 2, 3)
+   ──────────────────────────────────────────────────────────────────── */
+
+.onboarding-input-ring {
+  position: fixed;
+  border-radius: 10px;
+  border: 2px solid rgba(139, 92, 246, 0.8);
+  box-shadow:
+    0 0 0 4px rgba(139, 92, 246, 0.2),
+    0 0 20px rgba(139, 92, 246, 0.3);
+  pointer-events: none;
+  animation: input-ring-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+}
+
+.onboarding-input-ring.onboarding-ring-circle {
+  border-radius: 50%;
+}
+
+@keyframes input-ring-in {
+  from { opacity: 0; transform: scale(1.08); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.onboarding-input-pulse {
+  position: fixed;
+  border-radius: 10px;
+  pointer-events: none;
+  animation: onboarding-input-pulse-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: 1;
+}
+
+.onboarding-input-pulse.onboarding-ring-circle {
+  border-radius: 50%;
+}
+
+@keyframes onboarding-input-pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(139, 92, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Waiting / loading state (between steps)
+   ──────────────────────────────────────────────────────────────────── */
+
+.onboarding-waiting {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: onboarding-fade-in 0.3s ease-out;
+}
+
+.onboarding-waiting-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #a78bfa;
+  border-radius: 50%;
+  animation: onboarding-spin 0.8s linear infinite;
+}
+
+@keyframes onboarding-spin {
+  to { transform: rotate(360deg); }
+}
+
+.onboarding-waiting-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Steps 4 & 5 — Tips cards (centred, no spotlight)
+   ──────────────────────────────────────────────────────────────────── */
+
+.onboarding-tips-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 48px 36px;
+  max-width: 420px;
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px) saturate(1.6);
+  -webkit-backdrop-filter: blur(40px) saturate(1.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 28px;
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+  animation: tips-card-in 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes tips-card-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.onboarding-tips-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.onboarding-tips-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.onboarding-tips-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 340px;
+}
+
+/* Feature list (step 4) */
+.onboarding-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.onboarding-tips-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.onboarding-tips-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.onboarding-tips-item-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+/* Drag-drop demo (step 5) */
+.onboarding-tips-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  width: 100%;
+  animation: demo-float 3s ease-in-out infinite;
+}
+
+@keyframes demo-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+.onboarding-tips-demo-file,
+.onboarding-tips-demo-desktop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.onboarding-tips-demo-file svg,
+.onboarding-tips-demo-desktop svg {
+  opacity: 0.6;
+}
+
+.onboarding-tips-demo-arrow {
+  color: #a78bfa;
+  animation: demo-arrow-bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes demo-arrow-bounce {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(6px); }
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Responsive
+   ──────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .onboarding-welcome,
+  .onboarding-tips-card {
+    padding: 36px 28px 32px;
+    max-width: calc(100vw - 40px);
+    border-radius: 22px;
+  }
+
+  .onboarding-tooltip {
+    right: 8px;
+    width: calc(100vw - 16px);
+    bottom: 180px;
+    border-radius: 16px;
+  }
+
+  .onboarding-tooltip-dynamic {
+    width: calc(100vw - 32px);
+    left: 16px !important;
+  }
+
+  .onboarding-tooltip-arrow {
+    right: 44px;
+  }
+}

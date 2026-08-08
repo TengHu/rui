@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rui</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Status indicator in top right -->
+        <div id="status-indicator" class="status-indicator">
+            <span class="status-dot"></span>
+            <span id="status-text">Checking...</span>
+        </div>
+
+        <!-- Main heading - always visible -->
+        <h1 class="main-heading" id="main-heading">What can I do for you?</h1>
+
+        <!-- Input section - always visible -->
+        <div class="input-container">
+            <form id="chat-form">
+                <div class="input-wrapper">
+                    <button type="button" class="icon-button left-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                    <button type="button" class="icon-button left-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                    <input
+                        type="text"
+                        id="message-input"
+                        placeholder="Assign a task or ask anything"
+                        autocomplete="off"
+                    />
+                    <button type="button" class="icon-button right-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </button>
+                    <button type="submit" id="send-button" class="icon-button right-icon send-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 19V5M5 12l7-7 7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tools and Quick Actions - hidden when chat starts -->
+        <div id="welcome-section" class="welcome-section">
+            <div class="tools-section">
+                <div class="tools-text">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"></path>
+                    </svg>
+                    <span>Rui AI Agent</span>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button class="action-btn" data-action="planets">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-30 12 12)"></ellipse>
+                    </svg>
+                    Create a fancy sleek visualization app for planets in galaxy
+                </button>
+                <button class="action-btn" data-action="rentals">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="3" y1="9" x2="21" y2="9"></line>
+                        <line x1="9" y1="21" x2="9" y2="9"></line>
+                    </svg>
+                    Create a data visualization of rentals in NYC
+                </button>
+            </div>
+        </div>
+
+        <!-- Conversation area - appears when chat starts -->
+        <div id="conversation-area" class="conversation-area" style="display: none;">
+            <div id="chat-messages" class="chat-messages"></div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">
+            <div class="loading-spinner"></div>
+            <span>Agent is thinking...</span>
+        </div>
+    </div>
+
+    <!-- Presentation Panel -->
+    <div id="presentation-panel" class="presentation-panel">
+        <div class="presentation-header">
+            <div class="presentation-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <span id="presentation-file-name">File Preview</span>
+            </div>
+            <button id="close-presentation" class="close-presentation">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="presentation-content">
+            <div id="presentation-rich" class="presentation-rich" aria-live="polite"></div>
+            <iframe id="presentation-iframe" class="presentation-iframe" title="Preview" sandbox="allow-same-origin"></iframe>
+            <pre id="presentation-code"><code id="presentation-code-content">Loading...</code></pre>
+        </div>
+        <div class="presentation-footer">
+            <span id="presentation-status">Streaming...</span>
+            <span id="presentation-lines">0 lines</span>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

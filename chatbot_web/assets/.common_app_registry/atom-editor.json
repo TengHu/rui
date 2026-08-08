@@ -1,0 +1,9 @@
+{
+  "name": "atom-editor",
+  "title": "Atom Editor",
+  "port": 3004,
+  "command": "PORT=3004 node server.js",
+  "app_dir": "/home/user/workspace/atom-editor",
+  "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'><rect width='48' height='48' rx='10' fill='#1e1f2b'/><ellipse cx='24' cy='24' rx='14' ry='5.5' stroke='#4ec9b0' stroke-width='1.5' transform='rotate(0 24 24)'/><ellipse cx='24' cy='24' rx='14' ry='5.5' stroke='#4ec9b0' stroke-width='1.5' transform='rotate(60 24 24)'/><ellipse cx='24' cy='24' rx='14' ry='5.5' stroke='#4ec9b0' stroke-width='1.5' transform='rotate(120 24 24)'/><circle cx='24' cy='24' r='3' fill='#4ec9b0'/></svg>",
+  "created_at": "2026-02-08T21:13:19+00:00"
+}

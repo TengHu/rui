@@ -1,0 +1,68 @@
+---
+id: research-before-build
+trigger: "when implementing new features, building applications, or creating anything that 'feels like a solved problem'"
+confidence: 0.95
+domain: development-workflow
+source: local-repo-analysis
+related_skill: research-before-build
+---
+
+# Research Open-Source Projects Before Building
+
+## Action
+
+Before writing significant new code, search GitHub for:
+
+1. **Entire projects** to clone/fork as starting point
+2. **Frameworks** to build on top of
+3. **Reference implementations** to study and extract patterns from
+4. **Code snippets** to adapt
+5. **Libraries** to use as dependencies
+
+## GitHub Search Strategies
+
+```bash
+# Find projects to clone
+{stack} starter template stars:>500
+{feature} open source stars:>500
+
+# Find code patterns
+language:{lang} "{function pattern}" path:src
+filename:auth.ts stars:>100
+
+# Find frameworks
+{domain} framework headless stars:>2000
+```
+
+## Decision Priority
+
+1. **CLONE** - Project does 80%+ → use as base
+2. **FRAMEWORK** - Domain framework exists → build on it
+3. **EXTRACT** - Good patterns exist → copy and adapt code
+4. **LIBRARY** - Functionality packaged → use as dependency
+5. **BUILD** - Nothing fits → build from scratch (last resort)
+
+## Quick Evaluation
+
+- [ ] >500 GitHub stars (for significant features)
+- [ ] Active development (commits < 6 months)
+- [ ] Compatible license (MIT/Apache preferred)
+- [ ] Matches our stack (React, Python, etc.)
+- [ ] Good documentation / examples
+
+## Time Limits
+
+| Scope | Research Time |
+|-------|---------------|
+| Small feature | 15-30 min |
+| Medium feature | 1-2 hours |
+| Full application | 2-4 hours |
+
+## Why This Matters
+
+> "The best code is code you don't have to write."
+
+- Clone a SaaS starter = weeks of work saved
+- Extract auth patterns = avoid security mistakes
+- Use a framework = focus on business logic
+- Build on proven architecture = fewer bugs

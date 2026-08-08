@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atom Editor</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Highlight.js for syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- Additional languages -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/rust.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dockerfile.min.js"></script>
+</head>
+<body>
+  <!-- Title Bar -->
+  <div id="titlebar">
+    <div class="titlebar-left">
+      <div class="atom-logo">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4ec9b0" stroke-width="1.5">
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(0 12 12)"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
+          <circle cx="12" cy="12" r="2" fill="#4ec9b0"/>
+        </svg>
+      </div>
+      <div class="menu-items">
+        <span class="menu-item" data-menu="file">File</span>
+        <span class="menu-item" data-menu="edit">Edit</span>
+        <span class="menu-item" data-menu="view">View</span>
+        <span class="menu-item" data-menu="selection">Selection</span>
+        <span class="menu-item" data-menu="find">Find</span>
+        <span class="menu-item" data-menu="packages">Packages</span>
+        <span class="menu-item" data-menu="help">Help</span>
+      </div>
+    </div>
+    <div class="titlebar-center" id="titleText">Atom Editor</div>
+    <div class="titlebar-right"></div>
+  </div>
+
+  <!-- Menu Dropdowns -->
+  <div class="menu-dropdown" id="menu-file">
+    <div class="menu-entry" onclick="handleNewFile()">New File <span class="shortcut">Ctrl+N</span></div>
+    <div class="menu-entry" onclick="handleNewFolder()">New Folder</div>
+    <div class="menu-separator"></div>
+    <div class="menu-entry" onclick="handleSave()">Save <span class="shortcut">Ctrl+S</span></div>
+    <div class="menu-entry" onclick="handleSaveAll()">Save All <span class="shortcut">Ctrl+Shift+S</span></div>
+    <div class="menu-separator"></div>
+    <div class="menu-entry" onclick="closeActiveTab()">Close Tab <span class="shortcut">Ctrl+W</span></div>
+  </div>
+  <div class="menu-dropdown" id="menu-edit">
+    <div class="menu-entry" onclick="document.execCommand('undo')">Undo <span class="shortcut">Ctrl+Z</span></div>
+    <div class="menu-entry" onclick="document.execCommand('redo')">Redo <span class="shortcut">Ctrl+Shift+Z</span></div>
+    <div class="menu-separator"></div>
+    <div class="menu-entry" onclick="document.execCommand('cut')">Cut <span class="shortcut">Ctrl+X</span></div>
+    <div class="menu-entry" onclick="document.execCommand('copy')">Copy <span class="shortcut">Ctrl+C</span></div>
+    <div class="menu-entry" onclick="document.execCommand('paste')">Paste <span class="shortcut">Ctrl+V</span></div>
+    <div class="menu-separator"></div>
+    <div class="menu-entry" onclick="document.execCommand('selectAll')">Select All <span class="shortcut">Ctrl+A</span></div>
+  </div>
+  <div class="menu-dropdown" id="menu-view">
+    <div class="menu-entry" onclick="toggleSidebar()">Toggle Sidebar <span class="shortcut">Ctrl+B</span></div>
+    <div class="menu-entry" onclick="toggleMinimap()">Toggle Minimap</div>
+    <div class="menu-entry" onclick="toggleTerminal()">Toggle Terminal <span class="shortcut">Ctrl+`</span></div>
+    <div class="menu-separator"></div>
+    <div class="menu-entry" onclick="increaseFontSize()">Zoom In <span class="shortcut">Ctrl++</span></div>
+    <div class="menu-entry" onclick="decreaseFontSize()">Zoom Out <span class="shortcut">Ctrl+-</span></div>
+    <div class="menu-entry" onclick="resetFontSize()">Reset Zoom <span class="shortcut">Ctrl+0</span></div>
+    <div class="menu-separator"></div>
+    <div class="menu-entry" onclick="toggleWordWrap()">Toggle Word Wrap</div>
+  </div>
+  <div class="menu-dropdown" id="menu-selection">
+    <div class="menu-entry" onclick="selectLine()">Select Line <span class="shortcut">Ctrl+L</span></div>
+    <div class="menu-entry" onclick="duplicateLine()">Duplicate Line <span class="shortcut">Ctrl+Shift+D</span></div>
+  </div>
+  <div class="menu-dropdown" id="menu-find">
+    <div class="menu-entry" onclick="toggleFindPanel()">Find <span class="shortcut">Ctrl+F</span></div>
+    <div class="menu-entry" onclick="toggleFindPanel(true)">Find & Replace <span class="shortcut">Ctrl+H</span></div>
+    <div class="menu-separator"></div>
+    <div class="menu-entry" onclick="toggleCommandPalette()">Command Palette <span class="shortcut">Ctrl+Shift+P</span></div>
+    <div class="menu-entry" onclick="toggleFileFinder()">Go to File <span class="shortcut">Ctrl+P</span></div>
+  </div>
+  <div class="menu-dropdown" id="menu-packages">
+    <div class="menu-entry disabled">Package Manager (Coming Soon)</div>
+  </div>
+  <div class="menu-dropdown" id="menu-help">
+    <div class="menu-entry" onclick="showAbout()">About Atom Editor</div>
+    <div class="menu-entry" onclick="showKeybindings()">Keyboard Shortcuts</div>
+  </div>
+
+  <!-- Command Palette -->
+  <div class="overlay" id="commandPalette">
+    <div class="palette-container">
+      <input type="text" id="paletteInput" placeholder="Type a command..." autocomplete="off" spellcheck="false">
+      <div class="palette-results" id="paletteResults"></div>
+    </div>
+  </div>
+
+  <!-- File Finder -->
+  <div class="overlay" id="fileFinder">
+    <div class="palette-container">
+      <input type="text" id="fileFinderInput" placeholder="Go to file..." autocomplete="off" spellcheck="false">
+      <div class="palette-results" id="fileFinderResults"></div>
+    </div>
+  </div>
+
+  <!-- Go to Line -->
+  <div class="overlay" id="goToLineOverlay">
+    <div class="palette-container palette-small">
+      <input type="text" id="goToLineInput" placeholder="Go to line number..." autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+
+  <!-- About Modal -->
+  <div class="overlay" id="aboutModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#4ec9b0" stroke-width="1">
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(0 12 12)"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
+          <circle cx="12" cy="12" r="2" fill="#4ec9b0"/>
+        </svg>
+        <h2>Atom Editor</h2>
+      </div>
+      <p class="modal-version">Version 1.0.0</p>
+      <p class="modal-desc">A hackable text editor for the 21st Century.<br>Built with web technologies.</p>
+      <button class="modal-close" onclick="closeModal('aboutModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- Keybindings Modal -->
+  <div class="overlay" id="keybindingsModal">
+    <div class="modal-box modal-wide">
+      <h2 style="margin:0 0 16px 0;color:#ccc;font-size:16px;">Keyboard Shortcuts</h2>
+      <div class="keybindings-grid">
+        <div class="kb-row"><span class="kb-key">Ctrl+N</span><span class="kb-desc">New File</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+S</span><span class="kb-desc">Save File</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+W</span><span class="kb-desc">Close Tab</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+P</span><span class="kb-desc">Go to File</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+Shift+P</span><span class="kb-desc">Command Palette</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+F</span><span class="kb-desc">Find</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+H</span><span class="kb-desc">Find & Replace</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+G</span><span class="kb-desc">Go to Line</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+B</span><span class="kb-desc">Toggle Sidebar</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+`</span><span class="kb-desc">Toggle Terminal</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+L</span><span class="kb-desc">Select Line</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+D</span><span class="kb-desc">Select Next Match</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+/</span><span class="kb-desc">Toggle Comment</span></div>
+        <div class="kb-row"><span class="kb-key">Tab</span><span class="kb-desc">Indent</span></div>
+        <div class="kb-row"><span class="kb-key">Shift+Tab</span><span class="kb-desc">Outdent</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl++</span><span class="kb-desc">Zoom In</span></div>
+        <div class="kb-row"><span class="kb-key">Ctrl+-</span><span class="kb-desc">Zoom Out</span></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('keybindingsModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div id="main">
+    <!-- Sidebar -->
+    <div id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">PROJECT</span>
+        <div class="sidebar-actions">
+          <button class="icon-btn" onclick="handleNewFile()" title="New File">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1v14M1 8h14" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          </button>
+          <button class="icon-btn" onclick="handleNewFolder()" title="New Folder">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M1 3h5l2 2h7v9H1V3z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M8 7v5M5.5 9.5h5" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+          <button class="icon-btn" onclick="refreshTree()" title="Refresh">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 8A6 6 0 1 1 8 2"/><path d="M14 2v4h-4"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sidebar-search">
+        <input type="text" id="treeSearch" placeholder="Filter files..." autocomplete="off" spellcheck="false">
+      </div>
+      <div id="fileTree" class="file-tree"></div>
+    </div>
+
+    <!-- Resize Handle -->
+    <div id="sidebarResizer" class="resizer"></div>
+
+    <!-- Editor Area -->
+    <div id="editorArea">
+      <!-- Tabs -->
+      <div id="tabBar">
+        <div id="tabsContainer"></div>
+      </div>
+
+      <!-- Find Panel -->
+      <div id="findPanel" class="find-panel hidden">
+        <div class="find-row">
+          <input type="text" id="findInput" placeholder="Find..." autocomplete="off" spellcheck="false">
+          <button class="find-btn" onclick="findNext()" title="Find Next">↓</button>
+          <button class="find-btn" onclick="findPrev()" title="Find Prev">↑</button>
+          <span id="findCount" class="find-count"></span>
+          <button class="find-btn find-close" onclick="toggleFindPanel()">✕</button>
+        </div>
+        <div class="find-row replace-row hidden" id="replaceRow">
+          <input type="text" id="replaceInput" placeholder="Replace..." autocomplete="off" spellcheck="false">
+          <button class="find-btn" onclick="replaceNext()">Replace</button>
+          <button class="find-btn" onclick="replaceAll()">All</button>
+        </div>
+      </div>
+
+      <!-- Editor + Minimap -->
+      <div id="editorWrapper">
+        <div id="editorContainer">
+          <!-- Welcome Screen -->
+          <div id="welcomeScreen" class="welcome-screen">
+            <svg viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="#4ec9b044" stroke-width="0.5">
+              <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(0 12 12)"/>
+              <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/>
+              <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>
+              <circle cx="12" cy="12" r="2" fill="#4ec9b044"/>
+            </svg>
+            <h1>Atom Editor</h1>
+            <p>A hackable text editor for the 21st Century</p>
+            <div class="welcome-shortcuts">
+              <div class="ws-item"><kbd>Ctrl+P</kbd> Go to File</div>
+              <div class="ws-item"><kbd>Ctrl+Shift+P</kbd> Command Palette</div>
+              <div class="ws-item"><kbd>Ctrl+N</kbd> New File</div>
+              <div class="ws-item"><kbd>Ctrl+`</kbd> Toggle Terminal</div>
+            </div>
+          </div>
+          <!-- Line Numbers + Code -->
+          <div id="editor" class="editor hidden">
+            <div id="lineNumbers" class="line-numbers"></div>
+            <textarea id="codeInput" class="code-input" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+            <pre id="codeHighlight" class="code-highlight"><code id="codeHighlightCode"></code></pre>
+          </div>
+        </div>
+        <div id="minimap" class="minimap">
+          <canvas id="minimapCanvas"></canvas>
+          <div id="minimapViewport" class="minimap-viewport"></div>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div id="statusBar">
+        <div class="status-left">
+          <span id="statusBranch" class="status-item">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3a2 2 0 1 0-4 0 2 2 0 0 0 4 0zM5 13a2 2 0 1 0-4 0 2 2 0 0 0 4 0zM15 3a2 2 0 1 0-4 0 2 2 0 0 0 4 0zM3 5v6M13 5v2c0 2-2 3-4 3H5" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+            main
+          </span>
+          <span id="statusChanges" class="status-item"></span>
+        </div>
+        <div class="status-right">
+          <span id="statusCursor" class="status-item">Ln 1, Col 1</span>
+          <span id="statusSelection" class="status-item"></span>
+          <span id="statusIndent" class="status-item">Spaces: 2</span>
+          <span id="statusEncoding" class="status-item">UTF-8</span>
+          <span id="statusLanguage" class="status-item">Plain Text</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Context Menu -->
+  <div id="contextMenu" class="context-menu hidden">
+    <div class="ctx-entry" data-action="newFile">New File</div>
+    <div class="ctx-entry" data-action="newFolder">New Folder</div>
+    <div class="ctx-separator"></div>
+    <div class="ctx-entry" data-action="rename">Rename</div>
+    <div class="ctx-entry" data-action="delete">Delete</div>
+    <div class="ctx-separator"></div>
+    <div class="ctx-entry" data-action="copyPath">Copy Path</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

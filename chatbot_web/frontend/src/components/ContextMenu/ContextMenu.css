@@ -1,0 +1,128 @@
+/* Context Menu - macOS/Puter inspired */
+.context-menu {
+  position: fixed;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.15),
+    0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 4px 0;
+  min-width: 180px;
+  max-width: 280px;
+  z-index: 100000;
+  animation: contextMenuFadeIn 0.15s ease-out;
+  user-select: none;
+}
+
+@keyframes contextMenuFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.1s ease;
+  gap: 8px;
+}
+
+.context-menu-item:hover:not(.disabled) {
+  background: #007AFF;
+  color: white;
+}
+
+.context-menu-item:hover:not(.disabled) .context-menu-shortcut {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.context-menu-item:hover:not(.disabled) .context-menu-icon {
+  filter: brightness(0) invert(1);
+}
+
+.context-menu-item.disabled {
+  color: #999;
+  cursor: not-allowed;
+}
+
+.context-menu-item.has-submenu {
+  padding-right: 24px;
+}
+
+.context-menu-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.context-menu-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.context-menu-shortcut {
+  margin-left: auto;
+  font-size: 11px;
+  color: #888;
+  padding-left: 16px;
+}
+
+.context-menu-arrow {
+  margin-left: auto;
+  font-size: 8px;
+  color: #666;
+}
+
+.context-menu-item:hover:not(.disabled) .context-menu-arrow {
+  color: white;
+}
+
+.context-menu-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 4px 8px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .context-menu {
+    background: rgba(40, 40, 45, 0.95);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 4px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .context-menu-item {
+    color: #f0f0f0;
+  }
+
+  .context-menu-item.disabled {
+    color: #666;
+  }
+
+  .context-menu-shortcut {
+    color: #888;
+  }
+
+  .context-menu-divider {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

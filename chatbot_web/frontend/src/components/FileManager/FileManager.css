@@ -1,0 +1,310 @@
+/* FileManager - Puter-inspired file browser styles */
+
+.file-manager {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Sidebar */
+.fm-sidebar {
+  width: 180px;
+  min-width: 180px;
+  background: #f8f9fc;
+  border-right: 1px solid #e5e7eb;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fm-sidebar-section {
+  padding: 0 8px;
+}
+
+.fm-sidebar-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 12px 6px;
+}
+
+.fm-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+}
+
+.fm-sidebar-item:hover {
+  background: #e5e7eb;
+}
+
+.fm-sidebar-item.active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.fm-sidebar-icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.fm-sidebar-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Main content area */
+.fm-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Toolbar */
+.fm-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.fm-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.fm-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+
+.fm-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fm-btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.fm-btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+/* Breadcrumb */
+.fm-breadcrumb {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  margin: 0 8px;
+  font-size: 13px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.fm-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.fm-breadcrumb-sep {
+  color: #9ca3af;
+  margin: 0 6px;
+  font-size: 10px;
+}
+
+.fm-breadcrumb-btn {
+  border: none;
+  background: transparent;
+  color: #374151;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+
+.fm-breadcrumb-btn:hover {
+  background: #e5e7eb;
+}
+
+.fm-breadcrumb-btn:last-child {
+  font-weight: 500;
+}
+
+/* File list */
+.fm-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.fm-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.fm-item:hover {
+  background: #f3f4f6;
+}
+
+.fm-item.selected {
+  background: #dbeafe;
+}
+
+.fm-item.selected:hover {
+  background: #bfdbfe;
+}
+
+.fm-icon {
+  font-size: 20px;
+  line-height: 1;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.fm-name {
+  flex: 1;
+  font-size: 14px;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fm-item.directory .fm-name {
+  font-weight: 500;
+}
+
+.fm-size {
+  font-size: 12px;
+  color: #9ca3af;
+  width: 70px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.fm-rename-input {
+  flex: 1;
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid #3b82f6;
+  border-radius: 4px;
+  outline: none;
+  background: white;
+}
+
+/* Action buttons (show on hover) */
+.fm-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.fm-item:hover .fm-actions {
+  opacity: 1;
+}
+
+.fm-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+
+.fm-action-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.fm-delete-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Messages */
+.fm-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.fm-error {
+  color: #dc2626;
+}
+
+/* Status bar */
+.fm-statusbar {
+  padding: 6px 12px;
+  font-size: 12px;
+  color: #6b7280;
+  background: #f8f9fa;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Scrollbar styling */
+.fm-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.fm-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fm-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.fm-list::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

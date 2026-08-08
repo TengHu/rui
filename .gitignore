@@ -1,0 +1,73 @@
+# --- Secrets / credentials ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*_rsa
+*_dsa
+*_ed25519
+
+# Common cloud credential files
+*service-account*.json
+*service_account*.json
+*gcp*.json
+*firebase*.json
+
+# --- Private / not for publication ---
+private/
+conviction.txt
+video_editing/
+
+# --- Internal working notes (not part of the public docs) ---
+.reports/
+.claude/plan.md
+.claude/settings.local.json
+new_arch.md
+new_arch2.md
+
+# --- Local data / logs that may contain sensitive content ---
+events*.jsonl
+input_query.txt
+chatbot_web/data/app.db
+*.log
+log.txt
+workspace/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Virtualenvs ---
+venv/
+.venv/
+ENV/
+env/
+
+# --- Node / build output ---
+node_modules/
+dist/
+.vite/
+
+# --- Media (keep large binaries out of git) ---
+*.mp4
+*.mov
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+

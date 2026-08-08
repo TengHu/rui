@@ -1,0 +1,28 @@
+{
+  "tools": {
+    "sandbox-read": {
+      "file": "sandbox-read.ts",
+      "description": "Read a file from the sandbox filesystem",
+      "created_by": "system",
+      "used_by": []
+    },
+    "sandbox-write": {
+      "file": "sandbox-write.ts",
+      "description": "Write content to a file in the sandbox",
+      "created_by": "system",
+      "used_by": []
+    },
+    "sandbox-list": {
+      "file": "sandbox-list.ts",
+      "description": "List files and directories in a path",
+      "created_by": "system",
+      "used_by": []
+    },
+    "sandbox-exec": {
+      "file": "sandbox-exec.ts",
+      "description": "Run a shell command in the sandbox",
+      "created_by": "system",
+      "used_by": []
+    }
+  }
+}

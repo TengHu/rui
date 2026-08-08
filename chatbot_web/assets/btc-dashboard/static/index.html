@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTC-USD — Industrial Analytics Console</title>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    /* ========================================
+       ENTERPRISE INDUSTRIAL ANALYTICS UI
+       Dense, utilitarian, operational
+    ======================================== */
+
+    :root {
+      /* Base Palette — off-white, neutral grays, near-black text */
+      --bg-base: #edeef0;
+      --bg-panel: #f5f5f6;
+      --bg-card: #ffffff;
+      --bg-header: #3a3f47;
+      --bg-subheader: #4a5060;
+      --border-light: #d0d2d6;
+      --border-medium: #b8bbc2;
+      --border-heavy: #999da6;
+
+      /* Text — dark gray, never pure black */
+      --text-primary: #2c2f36;
+      --text-secondary: #5a5f6b;
+      --text-muted: #7d828e;
+      --text-label: #6b7080;
+      --text-inverse: #f0f1f3;
+
+      /* Semantic Color Encoding */
+      --green-safe: #2e8b57;
+      --green-light: #3da06a;
+      --green-bg: rgba(46, 139, 87, 0.08);
+      --yellow-warn: #c6930a;
+      --yellow-bg: rgba(198, 147, 10, 0.08);
+      --orange-alert: #cc6600;
+      --red-critical: #c0392b;
+      --red-bg: rgba(192, 57, 43, 0.08);
+      --blue-info: #34698a;
+      --blue-active: #2c5f7c;
+
+      /* Spacing */
+      --sp-xs: 4px;
+      --sp-sm: 8px;
+      --sp-md: 12px;
+      --sp-lg: 16px;
+      --sp-xl: 20px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-size: 13px;
+      line-height: 1.4;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ===== TOP SYSTEM BAR ===== */
+    .system-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-header);
+      color: var(--text-inverse);
+      padding: 0 var(--sp-lg);
+      height: 36px;
+      border-bottom: 1px solid #2e333a;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+    }
+
+    .system-bar-left {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+    }
+
+    .system-title {
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .system-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .system-instrument {
+      font-weight: 400;
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+    }
+
+    .system-bar-right {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-md);
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green-safe);
+    }
+
+    .status-dot.live {
+      animation: blink 2.5s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ===== PRICE STRIP (Sub-header) ===== */
+    .price-strip {
+      display: flex;
+      align-items: center;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-light);
+      padding: 6px var(--sp-lg);
+      gap: var(--sp-xl);
+      flex-wrap: wrap;
+    }
+
+    .price-primary {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sp-sm);
+    }
+
+    .price-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .price-change-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .price-change-badge.up {
+      background: var(--green-bg);
+      color: var(--green-safe);
+      border: 1px solid rgba(46,139,87,0.2);
+    }
+
+    .price-change-badge.down {
+      background: var(--red-bg);
+      color: var(--red-critical);
+      border: 1px solid rgba(192,57,43,0.2);
+    }
+
+    .strip-separator {
+      width: 1px;
+      height: 24px;
+      background: var(--border-light);
+    }
+
+    .strip-item {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .strip-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 500;
+    }
+
+    .strip-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .strip-value.green { color: var(--green-safe); }
+    .strip-value.red { color: var(--red-critical); }
+
+    /* ===== MAIN CONTENT AREA ===== */
+    .content-area {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      grid-template-rows: auto auto;
+      gap: 0;
+      min-height: calc(100vh - 36px - 44px);
+    }
+
+    /* ===== CHART PANEL (Main area) ===== */
+    .chart-panel {
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px var(--sp-md);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-panel);
+      gap: var(--sp-sm);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .toolbar-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-right: 6px;
+    }
+
+    .toolbar-btn {
+      padding: 3px 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 2px;
+      font-family: inherit;
+      transition: background 0.1s, color 0.1s;
+    }
+
+    .toolbar-btn:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-primary);
+    }
+
+    .toolbar-btn.active {
+      background: var(--blue-active);
+      color: #fff;
+      border-color: var(--blue-active);
+    }
+
+    .chart-body {
+      flex: 1;
+      position: relative;
+      min-height: 340px;
+    }
+
+    #chart-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    /* ===== RIGHT SIDEBAR — DATA PANEL ===== */
+    .data-panel {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .panel-section {
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .panel-section-header {
+      padding: 6px var(--sp-md);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      background: var(--bg-base);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px var(--sp-md);
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .data-row:last-child {
+      border-bottom: none;
+    }
+
+    .data-row:hover {
+      background: rgba(0,0,0,0.02);
+    }
+
+    .data-label {
+      font-size: 11px;
+      color: var(--text-label);
+      font-weight: 400;
+    }
+
+    .data-value {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .data-value.green { color: var(--green-safe); }
+    .data-value.red { color: var(--red-critical); }
+
+    /* ===== RANGE BAR ===== */
+    .range-section {
+      padding: 8px var(--sp-md) 10px;
+    }
+
+    .range-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .range-track {
+      position: relative;
+      height: 4px;
+      background: linear-gradient(90deg, var(--red-critical), var(--yellow-warn), var(--green-safe));
+      border-radius: 2px;
+      margin-bottom: 2px;
+    }
+
+    .range-marker {
+      position: absolute;
+      top: -3px;
+      width: 10px;
+      height: 10px;
+      background: var(--text-primary);
+      border: 2px solid var(--bg-card);
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 0 1px var(--border-medium);
+    }
+
+    .range-title {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    /* ===== VOLUME PANEL (Bottom) ===== */
+    .volume-panel {
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .volume-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 4px var(--sp-md);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-panel);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+    }
+
+    .volume-body {
+      position: relative;
+      height: 120px;
+    }
+
+    #volume-container {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    /* ===== LEGEND BAR ===== */
+    .legend-bar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border-light);
+      padding: 4px var(--sp-lg);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .legend-items {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-lg);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 3px;
+      border-radius: 1px;
+    }
+
+    .legend-gradient {
+      width: 60px;
+      height: 6px;
+      background: linear-gradient(90deg, var(--green-safe), var(--yellow-warn), var(--orange-alert), var(--red-critical));
+      border-radius: 1px;
+      border: 1px solid var(--border-light);
+    }
+
+    .legend-gradient-labels {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+    }
+
+    /* ===== LOADING STATE ===== */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 12px;
+      background: var(--bg-base);
+    }
+
+    .loading-spinner {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--border-medium);
+      border-top: 2px solid var(--blue-info);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      grid-column: 1 / -1;
+      text-align: left;
+      padding: 4px var(--sp-lg);
+      color: var(--text-muted);
+      font-size: 10px;
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 800px) {
+      .content-area {
+        grid-template-columns: 1fr;
+      }
+      .data-panel {
+        border-right: none;
+      }
+      .chart-body {
+        min-height: 260px;
+      }
+      .price-strip {
+        gap: var(--sp-md);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Initializing data feed...</div>
+  </div>
+
+  <div id="app-main" class="app" style="display:none;">
+
+    <!-- System Bar -->
+    <div class="system-bar">
+      <div class="system-bar-left">
+        <span class="system-title">Industrial Analytics Console</span>
+        <div class="system-divider"></div>
+        <span class="system-instrument">BTC-USD &mdash; Bitcoin / US Dollar</span>
+      </div>
+      <div class="system-bar-right">
+        <div class="status-indicator">
+          <div class="status-dot live"></div>
+          <span>LIVE FEED</span>
+        </div>
+        <div class="system-divider"></div>
+        <span id="last-update">--:--:--</span>
+      </div>
+    </div>
+
+    <!-- Price Strip -->
+    <div class="price-strip">
+      <div class="price-primary">
+        <span class="price-value" id="price-main">$--,---.--</span>
+        <span class="price-change-badge up" id="price-change">
+          <span id="change-arrow">&#9650;</span>
+          <span id="change-value">$0.00</span>
+          <span id="change-pct">(0.00%)</span>
+        </span>
+      </div>
+      <div class="strip-separator"></div>
+      <div class="strip-item">
+        <span class="strip-label">Prev Close</span>
+        <span class="strip-value" id="prev-close">--</span>
+      </div>
+      <div class="strip-separator"></div>
+      <div class="strip-item">
+        <span class="strip-label">24h High</span>
+        <span class="strip-value" id="day-high">--</span>
+      </div>
+      <div class="strip-item">
+        <span class="strip-label">24h Low</span>
+        <span class="strip-value" id="day-low">--</span>
+      </div>
+      <div class="strip-separator"></div>
+      <div class="strip-item">
+        <span class="strip-label">Mkt Cap</span>
+        <span class="strip-value" id="market-cap">--</span>
+      </div>
+      <div class="strip-item">
+        <span class="strip-label">24h Vol</span>
+        <span class="strip-value" id="volume-24h">--</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-area">
+
+      <!-- Chart Panel -->
+      <div class="chart-panel">
+        <div class="chart-toolbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="toolbar-group">
+              <span class="toolbar-label">Period</span>
+              <button class="toolbar-btn active" data-period="1d">1D</button>
+              <button class="toolbar-btn" data-period="5d">5D</button>
+              <button class="toolbar-btn" data-period="1mo">1M</button>
+              <button class="toolbar-btn" data-period="3mo">3M</button>
+              <button class="toolbar-btn" data-period="1y">1Y</button>
+            </div>
+            <div class="toolbar-group">
+              <span class="toolbar-label">Type</span>
+              <button class="toolbar-btn active" data-type="area">Area</button>
+              <button class="toolbar-btn" data-type="candlestick">OHLC</button>
+              <button class="toolbar-btn" data-type="line">Line</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-body">
+          <div id="chart-container"></div>
+        </div>
+      </div>
+
+      <!-- Right Data Panel -->
+      <div class="data-panel">
+        <div class="panel-section">
+          <div class="panel-section-header">Market Statistics</div>
+          <div class="data-row">
+            <span class="data-label">24h High</span>
+            <span class="data-value" id="panel-day-high">--</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">24h Low</span>
+            <span class="data-value" id="panel-day-low">--</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Market Cap</span>
+            <span class="data-value" id="panel-market-cap">--</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">24h Volume</span>
+            <span class="data-value" id="panel-volume-24h">--</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Prev Close</span>
+            <span class="data-value" id="panel-prev-close">--</span>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-header">Performance</div>
+          <div class="data-row">
+            <span class="data-label">30d Change</span>
+            <span class="data-value" id="month-change">--</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">1Y Change</span>
+            <span class="data-value" id="year-change">--</span>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-header">Today's Range</div>
+          <div class="range-section">
+            <div class="range-label-row">
+              <span id="range-day-low">--</span>
+              <span id="range-day-high">--</span>
+            </div>
+            <div class="range-track">
+              <div class="range-marker" id="day-marker"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-header">52-Week Range</div>
+          <div class="range-section">
+            <div class="range-label-row">
+              <span id="range-year-low">--</span>
+              <span id="range-year-high">--</span>
+            </div>
+            <div class="range-track">
+              <div class="range-marker" id="year-marker"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend — always visible -->
+        <div class="panel-section">
+          <div class="panel-section-header">Color Legend</div>
+          <div style="padding: 8px 12px;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+              <div class="legend-gradient"></div>
+            </div>
+            <div class="legend-gradient-labels" style="justify-content:space-between;width:60px;">
+              <span>Low</span>
+              <span>Mid</span>
+              <span>High</span>
+            </div>
+            <div style="margin-top:8px;display:flex;flex-direction:column;gap:3px;">
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:var(--green-safe);"></div>
+                <span style="font-size:10px;color:var(--text-muted);">Positive / Gain</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:var(--red-critical);"></div>
+                <span style="font-size:10px;color:var(--text-muted);">Negative / Loss</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-swatch" style="background:var(--blue-info);"></div>
+                <span style="font-size:10px;color:var(--text-muted);">Active Selection</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Volume Panel -->
+      <div class="volume-panel">
+        <div class="volume-toolbar">Volume (24h)</div>
+        <div class="volume-body">
+          <div id="volume-container"></div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        Data source: Yahoo Finance (yfinance) &bull; Refresh interval: 30s &bull; All values in USD &bull; Timestamps are local
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================
+    // STATE
+    // ========================================
+    let currentPeriod = '1d';
+    let currentChartType = 'area';
+    let chart = null;
+    let mainSeries = null;
+    let volumeChart = null;
+    let volumeSeries = null;
+    let prevPrice = null;
+
+    // ========================================
+    // FORMAT HELPERS
+    // ========================================
+    function formatCurrency(val) {
+      if (!val && val !== 0) return '--';
+      return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatLargeNumber(val) {
+      if (!val) return '--';
+      if (val >= 1e12) return '$' + (val / 1e12).toFixed(2) + 'T';
+      if (val >= 1e9) return '$' + (val / 1e9).toFixed(2) + 'B';
+      if (val >= 1e6) return '$' + (val / 1e6).toFixed(2) + 'M';
+      return '$' + val.toLocaleString();
+    }
+
+    function formatPct(val) {
+      if (!val && val !== 0) return '--';
+      const sign = val >= 0 ? '+' : '';
+      return sign + val.toFixed(2) + '%';
+    }
+
+    // ========================================
+    // CHARTS — Industrial / utilitarian style
+    // ========================================
+    function initCharts() {
+      const chartContainer = document.getElementById('chart-container');
+      chart = LightweightCharts.createChart(chartContainer, {
+        layout: {
+          background: { type: 'solid', color: '#ffffff' },
+          textColor: '#5a5f6b',
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          fontSize: 10,
+        },
+        grid: {
+          vertLines: { color: '#e8e9ec', style: 1 },
+          horzLines: { color: '#e8e9ec', style: 1 },
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal,
+          vertLine: { color: '#7d828e', width: 1, style: 2, labelBackgroundColor: '#4a5060' },
+          horzLine: { color: '#7d828e', width: 1, style: 2, labelBackgroundColor: '#4a5060' },
+        },
+        rightPriceScale: {
+          borderColor: '#d0d2d6',
+          scaleMargins: { top: 0.08, bottom: 0.08 },
+        },
+        timeScale: {
+          borderColor: '#d0d2d6',
+          timeVisible: true,
+          secondsVisible: false,
+        },
+        handleScroll: { vertTouchDrag: false },
+      });
+
+      // Volume chart
+      const volumeContainer = document.getElementById('volume-container');
+      volumeChart = LightweightCharts.createChart(volumeContainer, {
+        layout: {
+          background: { type: 'solid', color: '#ffffff' },
+          textColor: '#5a5f6b',
+          fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          fontSize: 10,
+        },
+        grid: {
+          vertLines: { color: '#e8e9ec', style: 1 },
+          horzLines: { color: '#e8e9ec', style: 1 },
+        },
+        rightPriceScale: {
+          borderColor: '#d0d2d6',
+          scaleMargins: { top: 0.1, bottom: 0 },
+        },
+        timeScale: {
+          borderColor: '#d0d2d6',
+          timeVisible: true,
+          secondsVisible: false,
+        },
+        handleScroll: { vertTouchDrag: false },
+      });
+
+      volumeSeries = volumeChart.addHistogramSeries({
+        priceFormat: { type: 'volume' },
+        priceScaleId: 'right',
+      });
+
+      createMainSeries();
+      handleResize();
+      window.addEventListener('resize', handleResize);
+    }
+
+    function handleResize() {
+      const cc = document.getElementById('chart-container');
+      const vc = document.getElementById('volume-container');
+      if (chart && cc) chart.applyOptions({ width: cc.clientWidth, height: cc.clientHeight });
+      if (volumeChart && vc) volumeChart.applyOptions({ width: vc.clientWidth, height: vc.clientHeight });
+    }
+
+    function createMainSeries() {
+      if (mainSeries) {
+        chart.removeSeries(mainSeries);
+        mainSeries = null;
+      }
+
+      if (currentChartType === 'area') {
+        mainSeries = chart.addAreaSeries({
+          lineColor: '#34698a',
+          topColor: 'rgba(52, 105, 138, 0.18)',
+          bottomColor: 'rgba(52, 105, 138, 0.02)',
+          lineWidth: 1,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+        });
+      } else if (currentChartType === 'candlestick') {
+        mainSeries = chart.addCandlestickSeries({
+          upColor: '#2e8b57',
+          downColor: '#c0392b',
+          borderDownColor: '#c0392b',
+          borderUpColor: '#2e8b57',
+          wickDownColor: '#c0392b',
+          wickUpColor: '#2e8b57',
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+        });
+      } else {
+        mainSeries = chart.addLineSeries({
+          color: '#34698a',
+          lineWidth: 1,
+          priceFormat: { type: 'price', precision: 2, minMove: 0.01 },
+        });
+      }
+    }
+
+    // ========================================
+    // DATA UPDATES
+    // ========================================
+    function updateCurrentData(data) {
+      const { current, stats, last_update } = data;
+      if (!current) return;
+
+      // Price
+      document.getElementById('price-main').textContent = formatCurrency(current.price);
+      prevPrice = current.price;
+
+      // Change badge
+      const changeEl = document.getElementById('price-change');
+      const isUp = current.change >= 0;
+      changeEl.className = `price-change-badge ${isUp ? 'up' : 'down'}`;
+      document.getElementById('change-arrow').innerHTML = isUp ? '&#9650;' : '&#9660;';
+      document.getElementById('change-value').textContent = formatCurrency(Math.abs(current.change));
+      document.getElementById('change-pct').textContent = `(${formatPct(current.change_pct)})`;
+
+      // Strip values
+      document.getElementById('day-high').textContent = formatCurrency(current.day_high);
+      document.getElementById('day-low').textContent = formatCurrency(current.day_low);
+      document.getElementById('market-cap').textContent = formatLargeNumber(current.market_cap);
+      document.getElementById('volume-24h').textContent = formatLargeNumber(current.volume_24h);
+      document.getElementById('prev-close').textContent = formatCurrency(current.prev_close);
+
+      // Panel values (right sidebar)
+      document.getElementById('panel-day-high').textContent = formatCurrency(current.day_high);
+      document.getElementById('panel-day-low').textContent = formatCurrency(current.day_low);
+      document.getElementById('panel-market-cap').textContent = formatLargeNumber(current.market_cap);
+      document.getElementById('panel-volume-24h').textContent = formatLargeNumber(current.volume_24h);
+      document.getElementById('panel-prev-close').textContent = formatCurrency(current.prev_close);
+
+      // Performance
+      if (stats) {
+        const moEl = document.getElementById('month-change');
+        moEl.textContent = formatPct(stats.month_change_pct);
+        moEl.className = `data-value ${stats.month_change_pct >= 0 ? 'green' : 'red'}`;
+
+        const yrEl = document.getElementById('year-change');
+        yrEl.textContent = formatPct(stats.year_change_pct);
+        yrEl.className = `data-value ${stats.year_change_pct >= 0 ? 'green' : 'red'}`;
+      }
+
+      // Range bars
+      if (current.day_low && current.day_high && current.price) {
+        const dayRange = current.day_high - current.day_low;
+        const dayPos = dayRange > 0 ? ((current.price - current.day_low) / dayRange) * 100 : 50;
+        document.getElementById('day-marker').style.left = Math.min(Math.max(dayPos, 0), 100) + '%';
+        document.getElementById('range-day-low').textContent = formatCurrency(current.day_low);
+        document.getElementById('range-day-high').textContent = formatCurrency(current.day_high);
+      }
+
+      if (current.fifty_two_low && current.fifty_two_high && current.price) {
+        const yrRange = current.fifty_two_high - current.fifty_two_low;
+        const yrPos = yrRange > 0 ? ((current.price - current.fifty_two_low) / yrRange) * 100 : 50;
+        document.getElementById('year-marker').style.left = Math.min(Math.max(yrPos, 0), 100) + '%';
+        document.getElementById('range-year-low').textContent = formatCurrency(current.fifty_two_low);
+        document.getElementById('range-year-high').textContent = formatCurrency(current.fifty_two_high);
+      }
+
+      // Timestamp
+      if (last_update) {
+        const d = new Date(last_update);
+        document.getElementById('last-update').textContent =
+          d.toLocaleTimeString('en-US', { hour12: false }) + ' UTC';
+      }
+    }
+
+    function updateChartData(histData) {
+      if (!histData || !histData.data || histData.data.length === 0) return;
+
+      const data = histData.data;
+
+      if (currentChartType === 'candlestick') {
+        const candleData = data.map(d => ({
+          time: d.time / 1000,
+          open: d.open,
+          high: d.high,
+          low: d.low,
+          close: d.close,
+        }));
+        mainSeries.setData(candleData);
+      } else {
+        const lineData = data.map(d => ({
+          time: d.time / 1000,
+          value: d.close,
+        }));
+        mainSeries.setData(lineData);
+      }
+
+      // Volume — use semantic green/red
+      const volData = data.map(d => ({
+        time: d.time / 1000,
+        value: d.volume,
+        color: d.close >= d.open ? 'rgba(46, 139, 87, 0.45)' : 'rgba(192, 57, 43, 0.45)',
+      }));
+      volumeSeries.setData(volData);
+
+      chart.timeScale().fitContent();
+      volumeChart.timeScale().fitContent();
+    }
+
+    // ========================================
+    // FETCH
+    // ========================================
+    async function fetchCurrentData() {
+      try {
+        const res = await fetch('/api/current');
+        if (!res.ok) throw new Error('Not ready');
+        const data = await res.json();
+        updateCurrentData(data);
+        return true;
+      } catch (e) {
+        console.log('Waiting for data...', e.message);
+        return false;
+      }
+    }
+
+    async function fetchHistoryData(period) {
+      try {
+        const res = await fetch(`/api/history/${period}`);
+        if (!res.ok) throw new Error('Not ready');
+        const data = await res.json();
+        updateChartData(data);
+      } catch (e) {
+        console.log('History not ready for', period);
+      }
+    }
+
+    // ========================================
+    // EVENT HANDLERS
+    // ========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Period buttons
+      document.querySelectorAll('.toolbar-btn[data-period]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.toolbar-btn[data-period]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentPeriod = btn.dataset.period;
+          fetchHistoryData(currentPeriod);
+        });
+      });
+
+      // Chart type buttons
+      document.querySelectorAll('.toolbar-btn[data-type]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.toolbar-btn[data-type]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentChartType = btn.dataset.type;
+          createMainSeries();
+          fetchHistoryData(currentPeriod);
+        });
+      });
+
+      startApp();
+    });
+
+    async function startApp() {
+      let ready = false;
+      for (let i = 0; i < 30; i++) {
+        ready = await fetchCurrentData();
+        if (ready) break;
+        await new Promise(r => setTimeout(r, 2000));
+      }
+
+      document.getElementById('app-loading').style.display = 'none';
+      document.getElementById('app-main').style.display = 'block';
+
+      initCharts();
+      await fetchHistoryData(currentPeriod);
+
+      // Auto-refresh every 30s
+      setInterval(async () => {
+        await fetchCurrentData();
+        await fetchHistoryData(currentPeriod);
+      }, 30000);
+    }
+  </script>
+</body>
+</html>

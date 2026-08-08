@@ -1,0 +1,9 @@
+{
+  "name": "draw-app",
+  "title": "Draw",
+  "port": 3001,
+  "command": "node server.js",
+  "app_dir": "/home/user/workspace/draw-app",
+  "logo": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48' fill='none'><rect width='48' height='48' rx='10' fill='#6c63ff'/><path d='M34 14a3 3 0 00-4.24 0L15 28.76V33h4.24L34 18.24A3 3 0 0034 14z' fill='white'/><path d='M12 36h24' stroke='white' stroke-width='2' stroke-linecap='round'/></svg>",
+  "created_at": "2026-02-08T20:39:25+00:00"
+}

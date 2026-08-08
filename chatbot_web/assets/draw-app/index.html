@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draw App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Top Toolbar -->
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <div class="logo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Draw</span>
+        </div>
+      </div>
+      <div class="toolbar-center">
+        <button class="tool-btn active" data-tool="brush" title="Brush (B)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </button>
+        <button class="tool-btn" data-tool="pencil" title="Pencil (P)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+        </button>
+        <button class="tool-btn" data-tool="line" title="Line (L)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="19" x2="19" y2="5"/></svg>
+        </button>
+        <button class="tool-btn" data-tool="rect" title="Rectangle (R)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        </button>
+        <button class="tool-btn" data-tool="circle" title="Circle (C)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+        </button>
+        <button class="tool-btn" data-tool="eraser" title="Eraser (E)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 20H7L3 16a1 1 0 010-1.4l9.6-9.6a1 1 0 011.4 0l6.6 6.6a1 1 0 010 1.4L15 18.6"/><path d="M6.5 13.5L13 7"/></svg>
+        </button>
+        <button class="tool-btn" data-tool="fill" title="Fill (F)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22l1-1h3l9-9"/><path d="M3 21L14.4 9.6a1 1 0 011.4 0l1.6 1.6a1 1 0 010 1.4L6 24"/><path d="M19 11c1 2 2 3.5 2 5a2 2 0 01-4 0c0-1.5 1-3 2-5z" fill="currentColor"/></svg>
+        </button>
+        <div class="separator"></div>
+        <button class="tool-btn" data-tool="text" title="Text (T)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9.5" y1="20" x2="14.5" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        </button>
+      </div>
+      <div class="toolbar-right">
+        <button class="action-btn" id="undoBtn" title="Undo (Ctrl+Z)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 100-6.36L1 10"/></svg>
+        </button>
+        <button class="action-btn" id="redoBtn" title="Redo (Ctrl+Y)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 110-6.36L23 10"/></svg>
+        </button>
+        <div class="separator"></div>
+        <button class="action-btn" id="clearBtn" title="Clear Canvas">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        </button>
+        <button class="action-btn" id="saveBtn" title="Save as PNG">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Area -->
+    <div class="main-area">
+      <!-- Left Sidebar -->
+      <aside class="sidebar">
+        <!-- Color Picker -->
+        <div class="panel">
+          <div class="panel-title">Color</div>
+          <div class="color-preview-row">
+            <div class="color-preview" id="colorPreview"></div>
+            <input type="color" id="colorPicker" value="#000000">
+          </div>
+          <div class="color-palette" id="colorPalette"></div>
+        </div>
+
+        <!-- Brush Size -->
+        <div class="panel">
+          <div class="panel-title">Size <span id="sizeValue" class="panel-value">4</span></div>
+          <input type="range" id="brushSize" min="1" max="80" value="4" class="slider">
+          <div class="size-preview-wrap">
+            <div id="sizePreview" class="size-preview"></div>
+          </div>
+        </div>
+
+        <!-- Opacity -->
+        <div class="panel">
+          <div class="panel-title">Opacity <span id="opacityValue" class="panel-value">100%</span></div>
+          <input type="range" id="opacitySlider" min="1" max="100" value="100" class="slider">
+        </div>
+
+        <!-- Shape Options -->
+        <div class="panel" id="shapeOptions" style="display:none;">
+          <div class="panel-title">Shape</div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="fillShape"> Fill shape
+          </label>
+        </div>
+
+        <!-- Layers -->
+        <div class="panel">
+          <div class="panel-title">Layers
+            <button class="mini-btn" id="addLayerBtn" title="Add layer">+</button>
+          </div>
+          <div id="layerList" class="layer-list"></div>
+        </div>
+      </aside>
+
+      <!-- Canvas Area -->
+      <div class="canvas-container" id="canvasContainer">
+        <canvas id="drawCanvas"></canvas>
+        <canvas id="previewCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+      <span id="cursorPos">0, 0</span>
+      <span id="canvasSize">0 x 0</span>
+      <span id="zoomLevel">100%</span>
+    </footer>
+  </div>
+
+  <!-- Text Input Dialog -->
+  <div class="modal-overlay" id="textModal" style="display:none;">
+    <div class="modal">
+      <div class="modal-title">Add Text</div>
+      <textarea id="textInput" placeholder="Type your text..." rows="3"></textarea>
+      <div class="modal-row">
+        <select id="fontFamily">
+          <option value="sans-serif">Sans Serif</option>
+          <option value="serif">Serif</option>
+          <option value="monospace">Monospace</option>
+          <option value="cursive">Cursive</option>
+        </select>
+        <input type="number" id="fontSize" value="24" min="8" max="200" style="width:70px;">
+        <label><input type="checkbox" id="fontBold"> Bold</label>
+        <label><input type="checkbox" id="fontItalic"> Italic</label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="textCancel">Cancel</button>
+        <button class="btn-primary" id="textConfirm">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

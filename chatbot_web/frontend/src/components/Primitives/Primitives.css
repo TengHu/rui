@@ -1,0 +1,234 @@
+/* ========================================
+   Primitives CSS - UI Building Blocks
+   ======================================== */
+
+/* Text */
+.spec-text {
+  display: inline;
+  line-height: 1.5;
+  color: #1a1a2e;
+}
+
+/* Input */
+.spec-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  color: #1a1a2e;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.spec-input:focus {
+  outline: none;
+  border-color: #4a90d9;
+  box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
+}
+
+.spec-input::placeholder {
+  color: #999;
+}
+
+textarea.spec-input {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Button */
+.spec-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.spec-button:hover {
+  transform: translateY(-1px);
+}
+
+.spec-button:active {
+  transform: translateY(0);
+}
+
+.spec-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spec-button-primary {
+  background: #4a90d9;
+  color: white;
+}
+
+.spec-button-primary:hover:not(:disabled) {
+  background: #357abd;
+}
+
+.spec-button-secondary {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.spec-button-secondary:hover:not(:disabled) {
+  background: #e5e5e5;
+}
+
+.spec-button-danger {
+  background: #e74c3c;
+  color: white;
+}
+
+.spec-button-danger:hover:not(:disabled) {
+  background: #c0392b;
+}
+
+/* List */
+.spec-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spec-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  transition: background-color 0.15s;
+}
+
+.spec-list-item:hover {
+  background: #f0f1f3;
+}
+
+.spec-list-item-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #1a1a2e;
+}
+
+.spec-list-item-checkbox {
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.spec-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.spec-list-item-count {
+  justify-content: space-between;
+}
+
+.spec-list-item-badge {
+  background: #4a90d9;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.spec-list-remove {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 8px;
+  transition: color 0.15s;
+}
+
+.spec-list-remove:hover {
+  color: #e74c3c;
+}
+
+.spec-list-empty {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+/* Table */
+.spec-table-container {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.spec-table th,
+.spec-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.spec-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.spec-table tr:last-child td {
+  border-bottom: none;
+}
+
+.spec-table tr:hover td {
+  background: #f8f9fa;
+}
+
+.spec-table-empty {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+/* Panel */
+.spec-panel {
+  width: 100%;
+}
+
+/* Chart placeholder */
+.spec-chart {
+  width: 100%;
+  height: 200px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
