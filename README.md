@@ -2,6 +2,14 @@
 
 Run Claude agents in isolated E2B sandboxes with a desktop OS-style interface featuring real-time streaming.
 
+## Demo
+
+Ask for an app in plain language and it is built inside a sandbox, then opens as a
+window on the desktop. Below: a CSV of warehouse inventory turned into an interactive
+3D visualization, side by side with a spreadsheet editor.
+
+https://github.com/user-attachments/assets/86dc0b11-81a0-4389-9541-abbd1dfffd13
+
 ## Architecture Overview
 
 This project combines a **FastAPI backend** with a **React frontend** to create a desktop operating system experience where users interact with AI-generated applications through draggable windows.
